@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="sk">
+
+<head>
+    <meta charset="UTF-8">
+    <title>CURL - Obedové Menu</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        table, tr, th, td {
+            border: solid 1px black;
+            border-collapse: collapse;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="siteHeader">
+        <img class="logoImg" src="pers_img.jpeg" alt="logo" width="120" height="120">
+        <h1>104537 - Obedové Menu</h1>
+    </div>
+    <nav>
+        <ul>
+            <li><a onclick="displayDay(0)">Pondelok</a></li>
+            <li><a onclick="displayDay(1)">Utorok</a></li>
+            <li><a onclick="displayDay(2)">Streda</a></li>
+            <li><a onclick="displayDay(3)">Štvrtok</a></li>
+            <li><a onclick="displayDay(4)">Piatok</a></li>
+            <li><a onclick="displayDay(5)">Sobota</a></li>
+            <li><a onclick="displayDay(6)">Nedeľa</a></li>
+        </ul>
+    </nav>
+</header>
+
+<section class="sectionContent">
+    <div id="day-0"></div>
+    <div id="day-1"></div>
+    <div id="day-2"></div>
+    <div id="day-3"></div>
+    <div id="day-4"></div>
+    <div id="day-5"></div>
+    <div id="day-6"></div>
+</section>
+
+<script>
+    fetch("delikanti.php")
+        .then(response => response.json())
+        .then(result => {
+            for (let i = 0; i < result["data"].length; i++) {
+                let h2 = document.createElement("h2");
+                let h2Text = document.createTextNode(result["data"][i]["day"] + " (" + result["data"][i]["date"] + "):");
+                h2.appendChild(h2Text);
+                let h3 = document.createElement("h3");
+                let h3Text = document.createTextNode("Delikanti");
+                h3.appendChild(h3Text);
+                document.querySelector("#day-"+i).append(h2);
+                document.querySelector("#day-"+i).append(h3);
+                for (let j = 0; j < result["data"][i]["menu"].length; j++) {
+                    let food = document.createTextNode(result["data"][i]["menu"][j]);
+                    document.querySelector("#day-"+i).append(food);
+                    document.querySelector("#day-"+i).append(document.createElement("br"));
+                }
+            }
+            fetch("eat.php")
+                .then(response => response.json())
+                .then(result => {
+                    for (let i = 0; i < result["data"].length; i++) {
+                        let h3 = document.createElement("h3");
+                        let h3Text = document.createTextNode("Eat & Meet");
+                        h3.appendChild(h3Text);
+                        document.querySelector("#day-"+i).append(h3);
+                        for (let j = 0; j < result["data"][i]["menu"].length; j++) {
+                            let food = document.createTextNode(result["data"][i]["menu"][j]);
+                            document.querySelector("#day-"+i).append(food);
+                            document.querySelector("#day-"+i).append(document.createElement("br"));
+                        }
+                    }
+                    fetch("fiitfood.php")
+                        .then(response => response.json())
+                        .then(result => {
+                            for (let i = 0; i < result["data"].length; i++) {
+                                let h3 = document.createElement("h3");
+                                let h3Text = document.createTextNode("FIIT Food");
+                                h3.appendChild(h3Text);
+                                document.querySelector("#day-"+i).append(h3);
+                                for (let j = 0; j < result["data"][i]["menu"].length; j++) {
+                                    let food = document.createTextNode(result["data"][i]["menu"][j]);
+                                    document.querySelector("#day-"+i).append(food);
+                                    document.querySelector("#day-"+i).append(document.createElement("br"));
+                                }
+                                document.querySelector("#day-"+i).append(document.createElement("hr"));
+                            }
+                        });
+                });
+        });
+
+    function displayDay(day) {
+        for (let i = 0; i < 7; i++) {
+            if (i === day)
+                document.querySelector("#day-"+i).style.display = "block";
+            else
+                document.querySelector("#day-"+i).style.display = "none";
+        }
+    }
+</script>
+
+</body>
